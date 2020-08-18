@@ -1,22 +1,15 @@
 package com.example.controllers;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.annotations.Api;
-
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
-
-import java.util.List;
-import java.util.Optional;
-
+import com.example.messages.PagedResult;
+import com.example.messages.ProductMessages.ProductRequest;
+import com.example.messages.ProductMessages.ProductResponse;
 import com.example.models.*;
 
 @RestController()
@@ -27,38 +20,36 @@ public class ProductController {
 	@Autowired
 	private ProductRepository repository;
 
+	private Product findEntityById(Long id) {
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+	}
+
 	@GetMapping("")
-	public List<Product> query() {
-		return repository.findAll();
+	public PagedResult<ProductResponse> query(Pageable pagable) {
+		return PagedResult.from(repository.findAll(pagable).map(p -> ProductResponse.from(p)));
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Product> getById(@PathVariable final long id) {
-		return repository.findById(id);
+	public ProductResponse getById(@PathVariable final long id) {
+		return ProductResponse.from(findEntityById(id));
 	}
 
 	@PostMapping("")
-	Product create(@RequestBody final Product model) {
-	  return repository.save(model);
+	ProductResponse create(@RequestBody final ProductRequest model) {
+		Product result = repository.save(model.asProduct());
+		return ProductResponse.from(result);
 	}
 
 	@PutMapping("/{id}")
-	Product update(@RequestBody final Product model, @PathVariable final Long id) {
-
-		return repository.findById(id)
-			.map(employee -> {
-				//   employee.setName(newEmployee.getName());
-				//   employee.setRole(newEmployee.getRole());
-				return repository.save(model);
-			})
-			.orElseGet(() -> {
-				//newEmployee.setId(id);
-				return repository.save(model);
-			});
+	ProductResponse update(@RequestBody final ProductRequest model, @PathVariable final Long id) {
+		Product entity = findEntityById(id);
+		repository.save(model.assignTo(entity));
+		return ProductResponse.from(findEntityById(id));
 	}
 
 	@DeleteMapping("/{id}")
 	void delete(@PathVariable final Long id) {
-		repository.deleteById(id);
+		Product entity = findEntityById(id);
+		repository.deleteById(entity.id);
 	}
 }

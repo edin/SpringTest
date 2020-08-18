@@ -12,12 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
-
 import com.example.models.*;
 
 @RestController()
@@ -28,14 +25,18 @@ public class CategoryController {
 	@Autowired
 	private CategoryRepository repository;
 
+	private Category findEntityById(Long id) {
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+	}
+
 	@GetMapping("")
 	public List<Category> query() {
 		return repository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Category> getById(@PathVariable final long id) {
-		return repository.findById(id);
+	public Category getById(@PathVariable final long id) {
+		return findEntityById(id);
 	}
 
 	@PostMapping("")
@@ -44,29 +45,16 @@ public class CategoryController {
 	}
 
 	@PutMapping("/{id}")
-	Category update(@RequestBody final Category model, @PathVariable final Long id) {
-
-		return repository.findById(id)
-			.map(employee -> {
-				//   employee.setName(newEmployee.getName());
-				//   employee.setRole(newEmployee.getRole());
-				return repository.save(model);
-			})
-			.orElseGet(() -> {
-				//newEmployee.setId(id);
-				return repository.save(model);
-			});
+	Category update(@RequestBody final Category model, @PathVariable final Long id)
+	{
+		Category entity = findEntityById(id);
+		entity.assign(model);
+		return repository.save(entity);
 	}
 
 	@DeleteMapping("/{id}")
 	void delete(@PathVariable final Long id) {
-		repository.deleteById(id);
-	}
-
-	@MessageMapping("/hello")
-	@SendTo("/topic/greetings")
-	public Greeting greeting(String message) throws Exception {
-	  Thread.sleep(1000);
-	  return new Greeting(1, "Hello, " + message + "!");
+		Category entity = findEntityById(id);
+		repository.deleteById(entity.id);
 	}
 }

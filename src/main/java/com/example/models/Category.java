@@ -2,25 +2,28 @@ package com.example.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "categories")
-public class Category {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "Id")
-    public Long id;
+public class Category extends CustomEntity {
 
-    @Column(name = "Title")
+    @Column(name = "parentid", nullable = true)
+    public Long parentId;
+
+    @Column(name = "title")
     public String title;
 
-    @Column(name = "IsVisible")
+    @Column(name = "isvisible")
     public boolean isVisible;
 
-    @Column(name = "ImageUrl")
+    @Column(name = "imageurl")
     public String imageUrl;
+
+    public void assign(Category model) {
+        this.parentId = model.parentId;
+        this.title = model.title;
+        this.isVisible = model.isVisible;
+        this.imageUrl = model.imageUrl;
+    }
 }

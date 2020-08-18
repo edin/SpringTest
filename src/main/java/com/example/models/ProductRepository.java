@@ -2,9 +2,9 @@ package com.example.models;
 
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ProductRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
 
     @Override
     List<Product> findAll();
