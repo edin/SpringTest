@@ -1,7 +1,7 @@
 package com.example.messages;
 
 import java.math.BigDecimal;
-import com.example.models.Product;
+import com.example.entity.Product;
 
 public class ProductMessages
 {

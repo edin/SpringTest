@@ -1,21 +1,15 @@
 package com.example.controllers;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
 import java.util.List;
-import com.example.models.*;
+
+import com.example.entity.*;
+import com.example.repositories.*;
 
 @RestController()
 @RequestMapping("categories")
@@ -40,12 +34,12 @@ public class CategoryController {
 	}
 
 	@PostMapping("")
-	Category create(@RequestBody final Category model) {
+	public Category create(@RequestBody final Category model) {
 	  return repository.save(model);
 	}
 
 	@PutMapping("/{id}")
-	Category update(@RequestBody final Category model, @PathVariable final Long id)
+	public Category update(@RequestBody final Category model, @PathVariable final Long id)
 	{
 		Category entity = findEntityById(id);
 		entity.assign(model);
@@ -53,7 +47,7 @@ public class CategoryController {
 	}
 
 	@DeleteMapping("/{id}")
-	void delete(@PathVariable final Long id) {
+	public void delete(@PathVariable final Long id) {
 		Category entity = findEntityById(id);
 		repository.deleteById(entity.id);
 	}

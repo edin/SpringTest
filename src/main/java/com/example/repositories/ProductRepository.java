@@ -1,6 +1,8 @@
-package com.example.models;
+package com.example.repositories;
 
 import java.util.List;
+
+import com.example.entity.Product;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
