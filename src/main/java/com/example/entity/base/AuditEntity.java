@@ -1,4 +1,4 @@
-package com.example.entity;
+package com.example.entity.base;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
         value = {"createdAt", "updatedAt"},
         allowGetters = true
 )
-public abstract class AuditEntity {
+public abstract class AuditEntity extends CustomEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdat", nullable = false, updatable = false)
     @CreatedDate

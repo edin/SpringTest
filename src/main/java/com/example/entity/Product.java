@@ -13,12 +13,11 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import com.example.entity.base.AuditEntity;
 
 @Entity
 @Table(name = "products")
-public class Product extends CustomEntity {
+public class Product extends AuditEntity {
 
     @Column(name ="title")
     public String title;
@@ -28,14 +27,6 @@ public class Product extends CustomEntity {
 
     @Column(name ="price")
     public BigDecimal price;
-
-    @Column(name ="createdat")
-    @CreatedDate
-    public LocalDateTime createdAt;
-
-    @Column(name ="updatedat")
-    @LastModifiedDate
-    public LocalDateTime updatedAt;
 
     @Column(name ="categoryid")
     public Long categoryId;
