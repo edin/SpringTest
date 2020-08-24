@@ -1,5 +1,7 @@
 package com.example.controllers;
 
+import com.example.messages.CategoryMessages.CategoryRequest;
+import com.example.messages.CategoryMessages.CategoryResponse;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 
@@ -28,22 +30,26 @@ public class CategoryController {
 		return repository.findAll();
 	}
 
+	@GetMapping("nodes/{id}")
+	public List<Category> queryChildNodes(@PathVariable final long id) {
+		return repository.findAllByParentId(id);
+	}
+
 	@GetMapping("/{id}")
-	public Category getById(@PathVariable final long id) {
-		return findEntityById(id);
+	public CategoryResponse getById(@PathVariable final long id) {
+		return CategoryResponse.from(findEntityById(id));
 	}
 
 	@PostMapping("")
-	public Category create(@RequestBody final Category model) {
-	  return repository.save(model);
+	public CategoryResponse create(@RequestBody final CategoryRequest model) {
+	  return CategoryResponse.from(repository.save(model.toEntity()));
 	}
 
 	@PutMapping("/{id}")
-	public Category update(@RequestBody final Category model, @PathVariable final Long id)
+	public CategoryResponse update(@RequestBody final CategoryRequest model, @PathVariable final Long id)
 	{
 		Category entity = findEntityById(id);
-		entity.assign(model);
-		return repository.save(entity);
+		return CategoryResponse.from(repository.save(model.assignTo(entity)));
 	}
 
 	@DeleteMapping("/{id}")

@@ -2,30 +2,23 @@ package com.example.messages;
 
 import java.math.BigDecimal;
 import com.example.entity.Product;
+import com.example.messages.Message.MessageRequest;
+import com.example.messages.Message.MessageResponse;
 
 public class ProductMessages
 {
-    public static class ProductRequest {
+    public static class ProductRequest extends MessageRequest<Product> {
         public Long categoryId;
         public String title;
         public String description;
         public BigDecimal price;
 
-        public Product asProduct() {
-            final Product model = new Product();
-            return assignTo(model);
-        }
-
-        public Product assignTo(final Product model) {
-            model.categoryId = categoryId;
-            model.title = title;
-            model.description = description;
-            model.price = price;
-            return model;
+        public Product toEntity() {
+            return assignTo(new Product());
         }
     }
 
-    public static class ProductResponse {
+    public static class ProductResponse extends MessageResponse<Product> {
         public Long id;
         public Long categoryId;
         public String title;
@@ -34,11 +27,7 @@ public class ProductMessages
 
         public static ProductResponse from(final Product model) {
             final ProductResponse result = new ProductResponse();
-            result.id = model.id;
-            result.categoryId = model.categoryId;
-            result.title = model.title;
-            result.description = model.description;
-            result.price = model.price;
+            result.assign(model);
             return result;
         }
     }

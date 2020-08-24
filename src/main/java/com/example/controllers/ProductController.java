@@ -26,8 +26,8 @@ public class ProductController {
 	}
 
 	@GetMapping("")
-	public PagedResult<ProductResponse> query(Pageable pagable) {
-		return PagedResult.from(repository.findAll(pagable).map(p -> ProductResponse.from(p)));
+	public PagedResult<ProductResponse> query(Pageable pageable) {
+		return PagedResult.from(repository.findAll(pageable).map(p -> ProductResponse.from(p)));
 	}
 
 	@GetMapping("/{id}")
@@ -37,7 +37,7 @@ public class ProductController {
 
 	@PostMapping("")
 	public ProductResponse create(@RequestBody final ProductRequest model) {
-		Product result = repository.save(model.asProduct());
+		Product result = repository.save(model.toEntity());
 		return ProductResponse.from(result);
 	}
 

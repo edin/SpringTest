@@ -2,11 +2,7 @@ package com.example.entity.base;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,13 +17,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
         allowGetters = true
 )
 public abstract class AuditEntity extends CustomEntity {
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdat", nullable = false, updatable = false)
     @CreatedDate
     public LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedat", nullable = false)
     @LastModifiedDate
     public LocalDateTime updatedAt;
+
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

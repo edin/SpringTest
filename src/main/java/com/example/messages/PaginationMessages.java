@@ -15,9 +15,6 @@ public class PaginationMessages
         public long to;
     }
 
-    public static class Sort {
-    }
-
     public static class PagedResult<T> {
         public List<T> data;
         public Pagination pagination;
@@ -26,6 +23,9 @@ public class PaginationMessages
             PagedResult<T> result = new PagedResult<>();
             result.data = page.getContent();
             result.pagination = new Pagination();
+            result.pagination.currentPage = page.getNumber();
+            result.pagination.total = page.getTotalElements();
+            result.pagination.lastPage = page.getTotalPages();
             return result;
         }
     }

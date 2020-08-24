@@ -21,11 +21,4 @@ public class Category extends CustomEntity {
 
     @Column(name = "imageurl")
     public String imageUrl;
-
-    public void assign(Category model) {
-        this.parentId = model.parentId;
-        this.title = model.title;
-        this.isVisible = model.isVisible;
-        this.imageUrl = model.imageUrl;
-    }
 }
